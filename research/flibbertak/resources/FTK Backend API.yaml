@@ -1,0 +1,3558 @@
+openapi: 3.0.3
+info:
+  title: FTK Backend API
+  version: 1.0.0
+  description: FTK Backend API documentation
+paths:
+  /api/articles/:
+    get:
+      operationId: api_articles_retrieve
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/articles/{id}/:
+    get:
+      operationId: api_articles_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleDetail'
+          description: ''
+  /api/articles/{id}/increase-view:
+    post:
+      operationId: api_articles_increase_view_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/categories/:
+    get:
+      operationId: api_categories_retrieve
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/documents/:
+    get:
+      operationId: api_documents_retrieve
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/documents/{id}/page/{page_number}/:
+    get:
+      operationId: api_documents_page_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: page_number
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/filter_articles/:
+    get:
+      operationId: api_filter_articles_retrieve
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/reviews/:
+    get:
+      operationId: api_reviews_retrieve
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/special_documents/:
+    get:
+      operationId: api_special_documents_retrieve
+      tags:
+      - Admin
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api_main/app/add_real_estate/:
+    post:
+      operationId: api_main_app_add_real_estate_create
+      description: 'Добавляет объект недвижимости в качестве залога к черновику заявки.
+        Идентификация объекта происходит одним из трех способов: по существующему
+        EID, по адресу или по кадастровому номеру.'
+      summary: Добавление недвижимости к заявке
+      tags:
+      - Property
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RealEstateRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RealEstateRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RealEstateRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Недвижимость успешно добавлена к заявке.
+        '400':
+          description: Не предоставлены валидные данные (адрес, кадастровый номер
+            или EID).
+        '401':
+          description: Пользователь не авторизован.
+        '404':
+          description: Черновик заявки или объект недвижимости не найден.
+  /api_main/app/add_special_equip/:
+    post:
+      operationId: api_main_app_add_special_equip_create
+      description: Добавляет спецтехники в качестве залога к черновику заявки. Запрос
+        должен быть в формате `multipart/form-data`. Идентификация происходит по EID,
+        VIN-коду или путем загрузки документов (СТС, ПТС/ПСМ, ЭПТС/ЭПСМ).
+      summary: Добавление спецтехники к заявке
+      tags:
+      - Property
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                app_eid:
+                  type: string
+                  format: uuid
+                  description: UUID черновика заявки
+                brand:
+                  type: string
+                  description: Марка ТС
+                model:
+                  type: string
+                  description: Модель ТС
+                prop_eid:
+                  type: string
+                  format: uuid
+                  required: false
+                  description: EID существующего ТС
+                vin_code:
+                  type: string
+                  required: false
+                  description: VIN-код ТС
+                sts:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  required: false
+                  description: Фотографии СТС
+                psm:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  required: false
+                  description: Фотографии ПСМ
+                epsm:
+                  type: string
+                  format: binary
+                  required: false
+                  description: Файл ЭПСМ
+                pdf:
+                  type: string
+                  format: binary
+                  required: false
+                  description: Готовый PDF документ
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: спецтехники успешно добавлена к заявке.
+        '400':
+          description: Не предоставлены валидные данные или ошибка обработки файлов.
+        '401':
+          description: Пользователь не авторизован.
+        '404':
+          description: Черновик заявки или объект не найден.
+        '500':
+          description: Внутренняя ошибка сервера при создании объекта.
+  /api_main/app/add_vehicle/:
+    post:
+      operationId: api_main_app_add_vehicle_create
+      description: Добавляет легкового автомобиля в качестве залога к черновику заявки.
+        Запрос должен быть в формате `multipart/form-data`. Идентификация происходит
+        по EID, VIN-коду или путем загрузки документов (СТС, ПТС/ПСМ, ЭПТС/ЭПСМ).
+      summary: Добавление легкового автомобиля к заявке
+      tags:
+      - Property
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                app_eid:
+                  type: string
+                  format: uuid
+                  description: UUID черновика заявки
+                brand:
+                  type: string
+                  description: Марка ТС
+                model:
+                  type: string
+                  description: Модель ТС
+                prop_eid:
+                  type: string
+                  format: uuid
+                  required: false
+                  description: EID существующего ТС
+                vin_code:
+                  type: string
+                  required: false
+                  description: VIN-код ТС
+                sts:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  required: false
+                  description: Фотографии СТС
+                pts:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  required: false
+                  description: Фотографии ПТС
+                epts:
+                  type: string
+                  format: binary
+                  required: false
+                  description: Файл ЭПТС
+                pdf:
+                  type: string
+                  format: binary
+                  required: false
+                  description: Готовый PDF документ
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: легкового автомобиля успешно добавлена к заявке.
+        '400':
+          description: Не предоставлены валидные данные или ошибка обработки файлов.
+        '401':
+          description: Пользователь не авторизован.
+        '404':
+          description: Черновик заявки или объект не найден.
+        '500':
+          description: Внутренняя ошибка сервера при создании объекта.
+  /api_main/app/add_video:
+    post:
+      operationId: api_main_app_add_video_create
+      description: "\n            Добавляет или обновляет информацию о видеофайле
+        в JSON-поле `video_data` черновика заявки.\n            В качестве ключа используется
+        `video_type`. Если видео с таким типом уже существует, оно будет перезаписано.\n
+        \           "
+      summary: Добавление видео к заявке
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddVideoRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AddVideoRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AddVideoRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddVideoSuccessResponse'
+          description: Видео успешно добавлено/обновлено
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddVideoBadRequestResponse'
+          description: Неверный запрос (отсутствуют поля)
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          description: Пользователь не аутентифицирован
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Заявка не найдена или уже отправлена
+  /api_main/app/check_attempts:
+    post:
+      operationId: api_main_app_check_attempts_create
+      description: Возвращает текущее количество использованных попыток проверки госномера
+        для активной заявки пользователя.
+      summary: Проверить количество попыток
+      tags:
+      - GosNumber Check
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckAttemptsRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CheckAttemptsRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CheckAttemptsRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptsCountResponse'
+          description: Успешный ответ с количеством попыток.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: Некорректный запрос (например, невалидный UUID).
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Пользователь не аутентифицирован.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppNotFound'
+          description: Заявка не найдена или не принадлежит пользователю.
+  /api_main/app/check_gos:
+    post:
+      operationId: api_main_app_check_gos_create
+      description: Проверяет данные автомобиля по госномеру через внешний сервис.
+        Есть лимит в 3 попытки на одну заявку.
+      summary: Проверить госномер
+      tags:
+      - GosNumber Check
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckGosNumberRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CheckGosNumberRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CheckGosNumberRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleDataResponse'
+          description: Успешная проверка
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Ошибка в запросе или от внешнего сервиса
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedGos'
+          description: Пользователь не аутентифицирован
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppNotFoundGos'
+          description: Заявка не найдена
+        '423':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Лимит попыток превышен
+        '502':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Ошибка внешнего сервиса
+  /api_main/app/check_passport_photos:
+    post:
+      operationId: api_main_app_check_passport_photos_create
+      description: Возвращает информацию о том, какие из трех обязательных фотографий
+        паспорта (главная страница, прописка, селфи с паспортом) уже загружены. Также
+        отдает текущий статус верификации пользователя.
+      summary: Проверка статуса загруженных фото паспорта
+      tags:
+      - Passport
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckPassportResponse'
+          description: Статус загруженных фотографий и верификации.
+        '400':
+          description: Ошибка при выполнении операции.
+        '401':
+          description: Пользователь не авторизован.
+  /api_main/app/create_app:
+    post:
+      operationId: api_main_app_create_app_create
+      description: Создает новую заявку или возвращает существующую незавершенную
+      summary: Создание новой кредитной заявки
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequestRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExistingAppResponse'
+          description: Существующая заявка найдена
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewAppResponse'
+          description: Заявка успешно создана
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Ошибка в запросе
+  /api_main/app/generate_qr:
+    post:
+      operationId: api_main_app_generate_qr_create
+      description: Создает и возвращает токен, который можно использовать для авторизации
+        на другом устройстве. Эндпоинт требует, чтобы пользователь был аутентифицирован.
+      summary: Генерация QR-кода для входа
+      tags:
+      - QR
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateQRRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GenerateQRRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GenerateQRRequestRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRCodeResponse'
+          description: ''
+        '401':
+          description: Пользователь не авторизован
+        '404':
+          description: Заявка с указанным app_eid не найдена
+  /api_main/app/get_loan_data:
+    post:
+      operationId: api_main_app_get_loan_data_create
+      description: Возвращает детальную информацию по конкретной кредитной заявке
+      summary: Получение данных по заявке
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetAppDataRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GetAppDataRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GetAppDataRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppDataResponse'
+          description: Данные заявки
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Не указан ID заявки
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Заявка не найдена
+  /api_main/app/get_step/:
+    post:
+      operationId: api_main_app_get_step_create
+      description: Возвращает текущий этап заполнения заявки
+      summary: Получение текущего этапа заявки
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetStepRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GetStepRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GetStepRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StepResponse'
+          description: Текущий этап
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Не указан ID заявки
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Заявка не найдена
+  /api_main/app/increase_step/:
+    post:
+      operationId: api_main_app_increase_step_create
+      description: Переводит заявку на следующий этап заполнения
+      summary: Переход на следующий этап заявки
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncreaseStepRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IncreaseStepRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IncreaseStepRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StepIncreasedResponse'
+          description: Успешный переход
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Неверный запрос
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Заявка не найдена
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalErrorResponse'
+          description: Ошибка при создании заявки во внешней системе
+  /api_main/app/loan_name:
+    put:
+      operationId: api_main_app_loan_name_update
+      description: Изменяет псевдоним (отображаемое имя) для текущего пользователя.
+      summary: Обновление псевдонима пользователя
+      tags:
+      - UserProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNameRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateNameRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateNameRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Имя успешно обновлено.
+        '401':
+          description: Пользователь не аутентифицирован.
+        '404':
+          description: Пользователь не найден.
+  /api_main/app/qr-login:
+    post:
+      operationId: api_main_app_qr_login_create
+      description: Обрабатывает переход по ссылке из QR-кода. Использует временный
+        токен для авторизации пользователя в новой браузерной сессии.
+      summary: Авторизация по QR-коду
+      tags:
+      - QR
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QRLoginRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QRLoginRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QRLoginRequestRequest'
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRLoginSuccess'
+          description: Успешная авторизация и переход
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRLoginError'
+          description: Неверный или уже использованный токен
+  /api_main/app/send_passport_verify:
+    post:
+      operationId: api_main_app_send_passport_verify_create
+      description: Инициирует процесс верификации паспорта после того, как все три
+        необходимые фотографии были загружены. Отправляет данные во внешнюю систему
+        и меняет статус пользователя на 'На верификации'.
+      summary: Отправка паспорта на верификацию
+      tags:
+      - Passport
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Паспорт успешно отправлен на верификацию.
+        '400':
+          description: Не все обязательные фотографии были загружены.
+        '404':
+          description: Данные паспорта для пользователя не найдены.
+        '500':
+          description: Ошибка при отправке данных во внешнюю систему.
+        '401':
+          description: Пользователь не авторизован.
+  /api_main/app/send_popup_info:
+    post:
+      operationId: api_main_app_send_popup_info_create
+      description: Отправляет информацию об оставленной заявке на почту менеджерам,
+        не требуя авторизации
+      summary: Отправка информации с popup-а лендинга
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExampleRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExampleRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExampleRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExampleSuccessResponse'
+          description: Успешное выполнение
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExampleBadRequestResponse'
+          description: Ошибка валидации данных
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          description: Пользователь не аутентифицирован
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Объект не найден
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+          description: Внутренняя ошибка сервера
+  /api_main/app/update_application_loan_amount/:
+    put:
+      operationId: api_main_app_update_application_loan_amount_update
+      description: Изменяет сумму кредита в черновике заявки
+      summary: Обновление суммы кредита
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanAmountRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanAmountRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanAmountRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Сумма успешно обновлена
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Заявка не найдена или уже отправлена
+  /api_main/app/update_application_loan_term/:
+    put:
+      operationId: api_main_app_update_application_loan_term_update
+      description: Изменяет срок кредита в черновике заявки
+      summary: Обновление срока кредита
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanTermRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanTermRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanTermRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: Срок успешно обновлен
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Заявка не найдена или уже отправлена
+  /api_main/app/update_legal_entity/:
+    put:
+      operationId: api_main_app_update_legal_entity_update
+      description: Добавляет или удаляет юридическое лицо из заявки
+      summary: Обновление юридического лица
+      tags:
+      - Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEntityRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateEntityRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateEntityRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUpdateResponse'
+          description: Юрлицо успешно обновлено
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Неверный ИНН
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Заявка не найдена или уже отправлена
+  /api_main/app/upload_passport_photos:
+    post:
+      operationId: api_main_app_upload_passport_photos_create
+      description: Загружает одну фотографию паспорта. Запрос должен быть в формате
+        `multipart/form-data`. При повторной загрузке файла того же типа (например,
+        главной страницы), старый файл будет заменен.
+      summary: Загрузка фотографии паспорта
+      tags:
+      - Passport
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                document_type:
+                  type: string
+                  enum:
+                  - pas_main
+                  - pas_address
+                  - pas_self
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          description: Фотография успешно загружена.
+        '400':
+          description: Неверный тип документа или ошибка валидации файла.
+        '500':
+          description: Ошибка при загрузке файла во внешнюю систему.
+        '401':
+          description: Пользователь не авторизован.
+  /api_main/backcall/:
+    put:
+      operationId: api_main_backcall_update
+      description: Создает запрос на обратный звонок. Для аутентифицированных пользователей
+        данные берутся из профиля.
+      summary: Запрос обратного звонка
+      tags:
+      - Backcall
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BackCallRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BackCallRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BackCallRequestRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackCallSuccess'
+          description: Запрос успешно создан
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+          description: Требуется аутентификация
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackCallError'
+          description: Ошибка при создании запроса
+  /api_main/backcall_appeal/:
+    post:
+      operationId: api_main_backcall_appeal_create
+      description: 'Создает официальное обращение или жалобу от пользователя. Обязательные
+        поля: full_name и phone. Максимальный размер файла: 10 МБ.'
+      summary: Создание обращения/жалобы
+      tags:
+      - Backcall
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppealRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AppealRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AppealRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealSuccessResponse'
+              examples:
+                УспешноеСоздание:
+                  value:
+                    message: Back call was created
+                    send_status: true
+                  summary: Пример успешного ответа
+                  description: Ответ сервера при успешном создании обращения.
+          description: Обращение успешно создано и отправлено
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealValidationResponse'
+              examples:
+                ОшибкаВалидации:
+                  value:
+                    error: full_name и phone обязательны
+                  summary: Ошибка валидации
+          description: Ошибка валидации входных данных
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealServerErrorResponse'
+              examples:
+                ВнутренняяОшибкаСервера:
+                  value:
+                    message: cant send back call
+                    send_status: false
+                  summary: Внутренняя ошибка сервера
+          description: Ошибка при отправке обращения во внешнюю систему
+  /api_main/bank_details:
+    get:
+      operationId: api_main_bank_details_retrieve
+      description: Получает сохраненные банковские реквизиты для заявки на займ.
+      summary: Получение банковских реквизитов
+      parameters:
+      - in: query
+        name: application_id
+        schema:
+          type: string
+          format: uuid
+        description: UUID заявки на займ
+        required: true
+      tags:
+      - Contracts
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankDetails'
+          description: ''
+        '404':
+          description: Заявка на займ не найдена
+        '500':
+          description: Серверная ошибка
+    put:
+      operationId: api_main_bank_details_update
+      description: 'Обновляет банковские реквизиты. Для завершения и отправки данных
+        передайте `"end_filling": true`.'
+      summary: Обновление банковских реквизитов
+      tags:
+      - Contracts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankDetailsUpdateRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BankDetailsUpdateRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BankDetailsUpdateRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Реквизиты успешно обновлены
+        '400':
+          description: Неверные данные или реквизиты уже отправлены
+        '404':
+          description: Неверные данные или реквизиты уже отправлены
+  /api_main/contract/confirm_code:
+    post:
+      operationId: api_main_contract_confirm_code_create
+      description: Отправляет введенный пользователем код для проверки и фиксации
+        подписания договора займа.
+      summary: Подтверждение кода для подписания
+      tags:
+      - Contracts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmLoanCodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConfirmLoanCodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConfirmLoanCodeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Код успешно подтвержден
+        '400':
+          description: Неверный код или ошибка
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка со стороны 1С
+  /api_main/contract/files:
+    get:
+      operationId: api_main_contract_files_retrieve
+      description: Получает и сохраняет файлы договора займа и договора доп. услуг
+        из внешней системы. Если файлы уже существуют, возвращает их.
+      summary: Получение файлов договора займа и договора доп. услуг
+      parameters:
+      - in: query
+        name: application_id
+        schema:
+          type: string
+          format: uuid
+        description: UUID заявки на займ
+        required: true
+      tags:
+      - Contracts
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanFiles'
+          description: ''
+        '400':
+          description: Договор займа / договор доп. услуг ещё не сформирован / ошибка
+            1С
+        '401':
+          description: Пользователь не авторизован
+        '404':
+          description: Заявка на займ не найдена
+  /api_main/contract/get_combain_files:
+    get:
+      operationId: api_main_contract_get_combain_files_retrieve
+      description: Возвращает список видео, изображений и документов, связанных с
+        определенным разделом заявки.
+      summary: Получение файлов, приложенных к заявке
+      parameters:
+      - in: query
+        name: app_eid
+        schema:
+          type: string
+          format: uuid
+        description: UUID заявки
+        required: true
+      - in: query
+        name: section
+        schema:
+          type: string
+          enum:
+          - inspectation
+          - property
+          - user
+        description: Раздел, для которого запрашиваются файлы
+        required: true
+      tags:
+      - Contracts
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CombainFilesResponse'
+          description: Успешный ответ со списком файлов.
+        '401':
+          description: Пользователь не авторизован.
+        '400':
+          description: Ошибка в запросе (напр., неверный 'section').
+  /api_main/contract/get_completion_statuses:
+    get:
+      operationId: api_main_contract_get_completion_statuses_retrieve
+      description: Возвращает статусы завершения для каждого из этапов оформления
+        договора по указанной заявке
+      summary: Получение статусов этапов оформления договора
+      parameters:
+      - in: query
+        name: application_id
+        schema:
+          type: string
+          format: uuid
+        description: UUID заявки на займ
+        required: true
+      tags:
+      - Contracts
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCompletionStatusesResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: You are not authenticated.
+          description: Пользователь не аутентифицирован
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Application for this user not found.
+          description: Заявка для данного пользователя не найдена
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: 'Server error: Internal server error'
+          description: Внутренняя ошибка сервера
+  /api_main/contract/get_contract:
+    post:
+      operationId: api_main_contract_get_contract_create
+      description: Возвращает детальную информацию по конкретному договору (займу),
+        включая ссылки на документы.
+      summary: Получение данных по договору
+      tags:
+      - Contracts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractDataRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContractDataRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContractDataRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractDataResponse'
+          description: Успешный ответ с данными договора.
+        '401':
+          description: Пользователь не авторизован.
+        '404':
+          description: Договор с указанным EID не найден.
+        '400':
+          description: Ошибка в запросе.
+  /api_main/contract/send_code:
+    post:
+      operationId: api_main_contract_send_code_create
+      description: Инициирует повторную отправку SMS с кодом для подписания документов
+        по договору займа.
+      summary: Отправка кода подтверждения для подписания
+      tags:
+      - Contracts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendLoanCodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendLoanCodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendLoanCodeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Код успешно отправлен
+        '400':
+          description: Ошибка при отправке кода
+        '401':
+          description: Пользователь не авторизован
+  /api_main/contract/send_file_request:
+    post:
+      operationId: api_main_contract_send_file_request_create
+      description: Отправляет в 1С запрос на формирование и отправку на почту пользователя
+        определенного документа по договору.
+      summary: Запрос на формирование файла по договору
+      tags:
+      - Contracts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FileRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Запрос на формирование файла успешно отправлен.
+        '500':
+          description: Внутренняя ошибка сервера при отправке запроса.
+        '401':
+          description: Пользователь не авторизован.
+        '404':
+          description: Договор с указанным EID не найден.
+  /api_main/contract/send_notify:
+    post:
+      operationId: api_main_contract_send_notify_create
+      description: Отправляет уведомление ответственному по заданной заявке на займ
+        менеджеру
+      summary: Отправка уведомления менеджеру
+      tags:
+      - Contracts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendNotificationRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendNotificationRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendNotificationRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Notification sent successfully.
+                  result:
+                    type: boolean
+                    example: true
+          description: Уведомление успешно отправлено
+        '400':
+          description: Неверный формат данных
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: You are not authenticated.
+                  result:
+                    type: boolean
+                    example: false
+          description: Пользователь не аутентифицирован
+        '404':
+          description: Заявка или клиент не найдены
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Something went wrong.
+                  result:
+                    type: boolean
+                    example: false
+          description: Внутренняя ошибка сервера
+  /api_main/contract/send_update_request:
+    post:
+      operationId: api_main_contract_send_update_request_create
+      description: Инициирует принудительное обновление данных по договору из 1С.
+        Имеет ограничение по частоте запросов.
+      summary: Запрос на обновление данных по договору
+      tags:
+      - Contracts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Данные договора успешно обновлены.
+        '429':
+          description: Запрос на обновление уже был отправлен недавно. Попробуйте
+            позже.
+        '401':
+          description: Пользователь не авторизован.
+        '404':
+          description: Договор с указанным EID не найден.
+  /api_main/contracts/collect_photos:
+    post:
+      operationId: api_main_contracts_collect_photos_create
+      description: "\nЗагружает файлы, связанные с заявкой.\nПоддерживает два сценария:\n1.
+        \ Загрузка одного файла (любого типа, включая PDF).\n2.  Загрузка нескольких
+        изображений, которые будут автоматически сконвертированы в один PDF-файл на
+        сервере.\n\nЗапрос должен быть в формате `multipart/form-data`.\n        "
+      summary: Загрузка файлов для заявки
+      tags:
+      - Files
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Файлы успешно обработаны и отправлены.
+        '400':
+          description: Ошибка в запросе (например, файлы не прикреплены).
+        '401':
+          description: Пользователь не аутентифицирован.
+        '500':
+          description: Ошибка при отправке файла во внешнюю систему.
+  /api_main/lk/filter_apps/:
+    post:
+      operationId: api_main_lk_filter_apps_create
+      description: "\n    Получает список заявок (черновиков и финальных) с возможностью
+        фильтрации и сортировки.\n    **Примечание:** Хотя метод `POST`, параметры
+        фильтрации передаются как query-параметры в URL.\n            "
+      summary: Фильтрация заявок пользователя
+      parameters:
+      - in: query
+        name: date_order
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        description: Направление сортировки по дате.
+      - in: query
+        name: order_by
+        schema:
+          type: string
+          enum:
+          - created_at
+          - number
+        description: Поле для сортировки.
+      - in: query
+        name: review_stage
+        schema:
+          type: string
+          enum:
+          - Закрыта
+          - Заполнение
+          - На рассмотрении
+          - Одобрено
+        description: Фильтр по статусу. Можно указать несколько раз (e.g., `?review_stage=filling&review_stage=approved`).
+        explode: true
+        style: form
+      tags:
+      - Applications & Contracts
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationItem'
+          description: ''
+        '401':
+          description: Пользователь не аутентифицирован.
+  /api_main/lk/get_all_contracts:
+    post:
+      operationId: api_main_lk_get_all_contracts_create
+      description: Возвращает список договоров пользователя с возможностью фильтрации
+        по статусу и сортировки по дате.
+      summary: Получение и фильтрация договоров пользователя
+      parameters:
+      - in: query
+        name: date_order
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        description: Направление сортировки по дате.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - Действует
+          - Закрыт
+          - Исполнен
+          - На оформлении
+        description: Фильтр по статусу договора. Можно указать несколько.
+        explode: true
+        style: form
+      tags:
+      - Applications & Contracts
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContractItem'
+          description: ''
+  /api_main/lk/get_apps:
+    post:
+      operationId: api_main_lk_get_apps_create
+      description: Возвращает полный список всех заявок пользователя, отсортированных
+        по статусам и дате создания.
+      summary: Получение всех заявок пользователя
+      tags:
+      - Applications & Contracts
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationItem'
+          description: ''
+  /api_main/lk/get_user_prop/:
+    post:
+      operationId: api_main_lk_get_user_prop_create
+      description: Возвращает все объекты имущества (недвижимость, легковые автомобили,
+        спецтехника), связанные с авторизованным пользователем. Каждый объект содержит
+        флаг `is_attached`, который показывает, прикреплен ли он к активной заявке.
+      summary: Получение списка имущества пользователя
+      tags:
+      - Property
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPropertyRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserPropertyRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserPropertyRequestRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPropertyResponse'
+          description: Успешный ответ со списками имущества.
+        '401':
+          description: Пользователь не авторизован.
+        '404':
+          description: Пользователь не найден.
+  /api_main/lk/updateVerify/:
+    post:
+      operationId: api_main_lk_updateVerify_create
+      tags:
+      - Integration
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api_main/questionnaire:
+    get:
+      operationId: api_main_questionnaire_retrieve
+      description: Получает данные анкеты для указанной заявки на займ (`app_eid`).
+      summary: Получение анкеты для заявки на займ
+      parameters:
+      - in: query
+        name: application_id
+        schema:
+          type: string
+          format: uuid
+        description: UUID заявки на займ
+        required: true
+      tags:
+      - Questionnaire
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionnaireData'
+          description: ''
+        '401':
+          description: Пользователь не авторизован
+        '404':
+          description: Заявка на займ / анкета не найдена
+    put:
+      operationId: api_main_questionnaire_update
+      description: 'Обновляет данные анкеты. Для завершения и отправки данных в 1С
+        передайте `"end_filling": true`.'
+      summary: Обновление анкеты для заявки на займ
+      tags:
+      - Questionnaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutQuestionnaireRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PutQuestionnaireRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PutQuestionnaireRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Анкета обновлена успешно
+        '401':
+          description: Пользователь не авторизован
+        '400':
+          description: Попытка изменить поле, не подлежащее изменению
+        '404':
+          description: Заявка на займ / анкета не найдена
+  /api_main/questionnaire/confirm_code:
+    post:
+      operationId: api_main_questionnaire_confirm_code_create
+      description: Отправляет введенный пользователем код для проверки и фиксации
+        подписания.
+      summary: Подтверждение кода для подписания
+      tags:
+      - Questionnaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmQCodeRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConfirmQCodeRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConfirmQCodeRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Код успешно подтвержден
+        '400':
+          description: Неверный код или ошибка
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка со стороны 1С
+  /api_main/questionnaire/files:
+    get:
+      operationId: api_main_questionnaire_files_retrieve
+      description: Получает и сохраняет файлы анкеты и согласия НБКИ из внешней системы.
+        Если файлы уже существуют, возвращает их.
+      summary: Получение файлов анкеты и НБКИ
+      parameters:
+      - in: query
+        name: questionnaire_id
+        schema:
+          type: string
+          format: uuid
+        description: UUID анкеты
+        required: true
+      tags:
+      - Questionnaire
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+          description: ''
+        '400':
+          description: Ошибка со стороны 1С
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка при сохранении файла
+  /api_main/questionnaire/send_code:
+    post:
+      operationId: api_main_questionnaire_send_code_create
+      description: Инициирует повторную отправку SMS с кодом для подписания документов
+        по анкете.
+      summary: Отправка кода подтверждения для подписания
+      tags:
+      - Questionnaire
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendQCodeRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendQCodeRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendQCodeRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Код успешно отправлен
+        '400':
+          description: Ошибка при отправке кода
+        '401':
+          description: Пользователь не авторизован
+  /api_main/reg/loan_calculator:
+    put:
+      operationId: api_main_reg_loan_calculator_update
+      description: Сохраняет сумму и срок кредита в сессии пользователя
+      summary: Установка параметров кредита
+      tags:
+      - Loan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanCalculatorRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoanCalculatorRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoanCalculatorRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanCalculatorResponse'
+          description: Параметры успешно сохранены
+  /api_main/reg/logout/:
+    post:
+      operationId: api_main_reg_logout_create
+      summary: Выход из аккаунта
+      tags:
+      - Authorisation
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Вы успешно вышли из аккаунта
+  /api_main/reg/send_sms/:
+    post:
+      operationId: api_main_reg_send_sms_create
+      description: Отправляет 4-значный код подтверждения на указанный номер телефона
+      summary: Отправка SMS-кода для регистрации/входа
+      tags:
+      - Authorisation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PhoneRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PhoneRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendCodeSuccess'
+          description: Код успешно отправлен
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendCodeError'
+          description: Неверные входные данные
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendCodeServerError'
+          description: Ошибка при отправке SMS
+  /api_main/reg/utm:
+    get:
+      operationId: api_main_reg_utm_retrieve
+      description: Записывает UTM-параметры из URL в сессию пользователя
+      summary: Сбор UTM-меток
+      parameters:
+      - in: query
+        name: utm_campaign
+        schema:
+          type: string
+        description: Название кампании
+      - in: query
+        name: utm_content
+        schema:
+          type: string
+        description: Идентификатор объявления
+      - in: query
+        name: utm_medium
+        schema:
+          type: string
+        description: Тип трафика
+      - in: query
+        name: utm_source
+        schema:
+          type: string
+        description: Источник трафика
+      - in: query
+        name: utm_term
+        schema:
+          type: string
+        description: Ключевое слово
+      tags:
+      - UTM
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HandleUTMResponse'
+          description: UTM-метки сохранены
+  /api_main/reg/verify_sms/:
+    post:
+      operationId: api_main_reg_verify_sms_create
+      description: Подтверждает код из SMS и выполняет вход или регистрацию пользователя
+      summary: Проверка SMS-кода
+      tags:
+      - Authorisation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeVerificationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CodeVerificationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CodeVerificationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyCodeSuccess'
+          description: Код подтвержден, пользователь авторизован
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyCodeError'
+          description: Неверный код или данные
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CodeNotFoundError'
+          description: Код для телефона не найден
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+          description: Ошибка сервера
+  /api_main/usr/create_new_passport:
+    post:
+      operationId: api_main_usr_create_new_passport_create
+      description: Удаляет все ранее загруженные фотографии паспорта для текущего
+        пользователя и сбрасывает его статус верификации на 'Не верифицирован'. Это
+        позволяет начать процесс загрузки и верификации паспорта заново.
+      summary: Сброс данных паспорта для повторной загрузки
+      tags:
+      - Passport
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          description: Запись о паспорте создана (если не существовала). Можно загружать
+            фото.
+        '200':
+          description: Данные паспорта успешно сброшены. Можно загружать новые фото.
+        '400':
+          description: Ошибка при выполнении операции.
+        '401':
+          description: Пользователь не авторизован.
+  /api_main/usr/get_user_data:
+    post:
+      operationId: api_main_usr_get_user_data_create
+      description: Возвращает полную информацию о профиле аутентифицированного пользователя.
+      summary: Получение данных пользователя
+      tags:
+      - UserProfile
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+          description: Данные пользователя успешно получены.
+        '401':
+          description: Пользователь не аутентифицирован.
+        '400':
+          description: Ошибка при получении данных.
+  /api_main/usr/unsubscribe_from_mailing:
+    post:
+      operationId: api_main_usr_unsubscribe_from_mailing_create
+      summary: Отказаться от email-рассылки
+      tags:
+      - UserProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ UnsubscribeFromMailingRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ UnsubscribeFromMailingRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ UnsubscribeFromMailingRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsubscribeFromMailingResponse'
+          description: Рассылка для пользователя отключена
+  /api_main/usr/update_sopd:
+    put:
+      operationId: api_main_usr_update_sopd_update
+      description: Инициирует отправку документа СОПД для текущего аутентифицированного
+        пользователя.
+      summary: Отправка СОПД
+      tags:
+      - UserProfile
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SopdResponse'
+          description: Результат отправки СОПД.
+        '401':
+          description: Пользователь не аутентифицирован.
+  /api_main/usr/update_user_email/:
+    put:
+      operationId: api_main_usr_update_user_email_update
+      description: Изменяет адрес электронной почты для текущего пользователя.
+      summary: Обновление Email пользователя
+      tags:
+      - UserProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: Email успешно обновлен.
+        '401':
+          description: Пользователь не аутентифицирован.
+        '404':
+          description: Пользователь не найден.
+  /newUpdates:
+    post:
+      operationId: newUpdates_create
+      tags:
+      - Integration
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    ' UnsubscribeFromMailingRequestRequest':
+      type: object
+      properties:
+        user_id:
+          type: string
+          minLength: 1
+      required:
+      - user_id
+    AddVideoBadRequestResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    AddVideoRequestRequest:
+      type: object
+      properties:
+        application_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+        video_type:
+          type: string
+          minLength: 1
+          description: Тип видео (ключ), например 'exterior' или 'engine_sound'
+        filename:
+          type: string
+          minLength: 1
+          description: Имя файла, например 'video_123.mp4'
+      required:
+      - application_eid
+      - filename
+      - video_type
+    AddVideoSuccessResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    AppDataResponse:
+      type: object
+      properties:
+        loan_amount:
+          type: number
+          format: double
+        loan_term:
+          type: integer
+        legal_entity_inn:
+          type: string
+          nullable: true
+        number:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        email_newsletter:
+          type: boolean
+        review_stage:
+          type: string
+        payment_amount:
+          type: number
+          format: double
+          nullable: true
+        reason_for_refusal:
+          type: string
+          nullable: true
+        payment_type:
+          type: string
+          nullable: true
+        deal_entering:
+          type: string
+          nullable: true
+        show_contract_btn:
+          type: boolean
+        show_conditions:
+          type: boolean
+        sopd:
+          type: boolean
+        registration_started:
+          type: boolean
+        is_viewed:
+          type: boolean
+      required:
+      - deal_entering
+      - email
+      - email_newsletter
+      - is_viewed
+      - legal_entity_inn
+      - loan_amount
+      - loan_term
+      - name
+      - number
+      - payment_amount
+      - payment_type
+      - reason_for_refusal
+      - registration_started
+      - review_stage
+      - show_conditions
+      - show_contract_btn
+      - sopd
+    AppNotFound:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    AppNotFoundGos:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    AppealRequestRequest:
+      type: object
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          description: Полное имя заявителя
+        phone:
+          type: string
+          minLength: 1
+          description: Контактный телефон
+        comment:
+          type: string
+          description: Текст обращения
+        postal_address:
+          type: string
+          description: Почтовый адрес
+        email_address:
+          description: Email адрес
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        contract_number:
+          type: string
+          description: Номер договора
+        sent_on_behalf_of:
+          type: boolean
+          description: Отправлено от вашего имени? (true/false)
+        appeal_decision:
+          type: boolean
+          description: Обжалование решения? (true/false)
+        appeal_type:
+          type: string
+          description: Тип обращения
+        response_method:
+          type: boolean
+          description: Способ получения ответа (true - электронный, false - почтой)
+        attached_file:
+          type: string
+          format: binary
+          description: Прикрепляемый файл (максимальный размер 10 МБ)
+      required:
+      - full_name
+      - phone
+    AppealServerErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        send_status:
+          type: boolean
+      required:
+      - message
+      - send_status
+    AppealSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        send_status:
+          type: boolean
+      required:
+      - message
+      - send_status
+    AppealValidationResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    ApplicationItem:
+      type: object
+      properties:
+        eid:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор заявки
+        number:
+          type: string
+          description: Номер заявки
+        review_stage:
+          allOf:
+          - $ref: '#/components/schemas/ReviewStageEnum'
+          description: |-
+            Статус рассмотрения заявки
+
+            * `Заполнение` - Filling
+            * `На рассмотрении` - Consideration
+            * `Одобрено` - Approved
+            * `Закрыта` - Not Relevant
+        created_at:
+          type: string
+          format: date-time
+          description: Дата и время создания
+      required:
+      - created_at
+      - eid
+      - number
+      - review_stage
+    ArticleDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 200
+        thumbnail_img:
+          type: string
+          format: uri
+          title: Изображение, превью
+        content:
+          type: string
+          title: Содержание
+        meta_tags:
+          type: string
+          title: Мета теги
+        created_at:
+          type: string
+          format: date
+          readOnly: true
+          title: Дата
+        views:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Просмотры
+      required:
+      - content
+      - created_at
+      - id
+      - meta_tags
+      - thumbnail_img
+      - title
+    AttemptsCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Текущее количество использованных попыток
+      required:
+      - count
+    BackCallError:
+      type: object
+      properties:
+        message:
+          type: string
+        send_status:
+          type: boolean
+      required:
+      - message
+      - send_status
+    BackCallRequestRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя пользователя
+        comment:
+          type: string
+          description: Комментарий к звонку
+        type:
+          type: string
+          description: Тип обратного звонка
+    BackCallSuccess:
+      type: object
+      properties:
+        message:
+          type: string
+        send_status:
+          type: boolean
+      required:
+      - message
+      - send_status
+    BadRequest:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    BankDetails:
+      type: object
+      properties:
+        bic_bank:
+          type: string
+          maxLength: 9
+        account_number:
+          type: string
+          maxLength: 20
+        bank_name:
+          type: string
+        client_name:
+          type: string
+          readOnly: true
+        corr_number:
+          type: string
+          maxLength: 20
+      required:
+      - account_number
+      - bank_name
+      - bic_bank
+      - client_name
+      - corr_number
+    BankDetailsUpdateRequestRequest:
+      type: object
+      properties:
+        bic_bank:
+          type: string
+          minLength: 1
+          maxLength: 9
+        account_number:
+          type: string
+          minLength: 1
+          maxLength: 20
+        bank_name:
+          type: string
+          minLength: 1
+        corr_number:
+          type: string
+          minLength: 1
+          maxLength: 20
+        application_id:
+          type: string
+          format: uuid
+          writeOnly: true
+        end_filling:
+          type: boolean
+          writeOnly: true
+          description: Установить в true для завершения и отправки реквизитов
+      required:
+      - account_number
+      - application_id
+      - bank_name
+      - bic_bank
+      - corr_number
+    CheckAttemptsRequestRequest:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+      required:
+      - app_eid
+    CheckGosNumberRequestRequest:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+        number:
+          type: string
+          minLength: 1
+          description: Государственный регистрационный номер
+          maxLength: 15
+      required:
+      - app_eid
+      - number
+    CheckPassportResponse:
+      type: object
+      properties:
+        passport_main:
+          type: boolean
+        passport_address:
+          type: boolean
+        passport_selfie:
+          type: boolean
+        verify:
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+      - description
+      - passport_address
+      - passport_main
+      - passport_selfie
+      - verify
+    CodeNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+        result:
+          type: boolean
+      required:
+      - error
+      - result
+    CodeVerificationRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+        code:
+          type: integer
+      required:
+      - code
+      - phone
+    CombainFilesResponse:
+      type: object
+      properties:
+        video:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileResponse'
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileResponse'
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileResponse'
+      required:
+      - documents
+      - images
+      - video
+    ConfirmLoanCodeRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          description: UUID заявки на займ
+        code:
+          type: string
+          minLength: 1
+          maxLength: 5
+        page_number:
+          type: integer
+          default: 0
+      required:
+      - application_id
+      - code
+    ConfirmQCodeRequestRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+          format: uuid
+        questionnaire_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+          minLength: 1
+          maxLength: 5
+      required:
+      - application_id
+      - code
+      - questionnaire_id
+    ContractDataRequestRequest:
+      type: object
+      properties:
+        contract_eid:
+          type: string
+          format: uuid
+          description: UUID договора
+      required:
+      - contract_eid
+    ContractDataResponse:
+      type: object
+      properties:
+        eid:
+          type: string
+          format: uuid
+        status:
+          type: string
+        number:
+          type: string
+        remains_json: {}
+        date:
+          type: string
+          format: date
+        documents:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - date
+      - documents
+      - eid
+      - number
+      - remains_json
+      - status
+    ContractItem:
+      type: object
+      properties:
+        eid:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор договора
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Статус договора
+
+            * `На оформлении` - On Registration
+            * `Действует` - Valid
+            * `Исполнен` - Executed
+            * `Закрыт` - Closed
+        number:
+          type: string
+          description: Номер договора
+        date:
+          type: string
+          format: date
+          description: Дата договора
+      required:
+      - date
+      - eid
+      - number
+      - status
+    CreateAppRequestRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          description: Сумма кредита
+        term:
+          type: integer
+          description: Срок кредита (в месяцах)
+    EntityUpdateResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Текст ошибки
+      required:
+      - error
+    ExampleBadRequestResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    ExampleRequestRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Псведоним клиента
+        phone:
+          type: string
+          minLength: 1
+          description: Номер телефона клиента
+        amount:
+          type: integer
+          description: Сумма финансирования
+      required:
+      - amount
+    ExampleSuccessResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    ExistingAppResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        app_eid:
+          type: string
+          format: uuid
+        number:
+          type: string
+        step:
+          type: integer
+        result:
+          type: boolean
+      required:
+      - app_eid
+      - detail
+      - number
+      - result
+      - step
+    ExternalErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        step:
+          type: integer
+      required:
+      - detail
+      - step
+    FileInfo:
+      type: object
+      properties:
+        path:
+          type: string
+          description: URL для скачивания файла
+        filename:
+          type: string
+          description: Имя файла
+      required:
+      - filename
+      - path
+    FileNameEnum:
+      enum:
+      - debtCertificateFile
+      - debtAbsenceCertificateFile
+      - paymentScheduleFile
+      type: string
+      description: |-
+        * `debtCertificateFile` - debtCertificateFile
+        * `debtAbsenceCertificateFile` - debtAbsenceCertificateFile
+        * `paymentScheduleFile` - paymentScheduleFile
+    FileRequestRequest:
+      type: object
+      properties:
+        contract_eid:
+          type: string
+          format: uuid
+          description: UUID договора
+        file_name:
+          allOf:
+          - $ref: '#/components/schemas/FileNameEnum'
+          description: |-
+            Имя запрашиваемого файла
+
+            * `debtCertificateFile` - debtCertificateFile
+            * `debtAbsenceCertificateFile` - debtAbsenceCertificateFile
+            * `paymentScheduleFile` - paymentScheduleFile
+      required:
+      - contract_eid
+      - file_name
+    FileResponse:
+      type: object
+      properties:
+        eid:
+          type: string
+          format: uuid
+        type:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        canAttach:
+          type: boolean
+        canUseCamera:
+          type: boolean
+        description:
+          type: string
+        subObjectType:
+          type: string
+        subObjectId:
+          type: string
+          format: uuid
+      required:
+      - canAttach
+      - canUseCamera
+      - description
+      - eid
+      - name
+      - status
+      - subObjectId
+      - subObjectType
+      - type
+    FileUploadRequestRequest:
+      type: object
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+          description: Один или несколько файлов
+        app_eid:
+          type: string
+          format: uuid
+          description: EID заявки, к которой прикрепляются файлы
+        file_type:
+          type: string
+          minLength: 1
+          description: Вид файла (Видео | Изображение | Документ)
+        file_name:
+          type: string
+          minLength: 1
+          description: Название вида файла в 1С
+      required:
+      - app_eid
+      - file_name
+      - file_type
+      - files
+    GenerateQRRequestRequest:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID заявки, если QR-код генерируется в контексте конкретной
+            заявки (where='app')
+    GetAppDataRequestRequest:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+      required:
+      - app_eid
+    GetCompletionStatusesResponse:
+      type: object
+      properties:
+        application_id:
+          type: string
+          format: uuid
+        requisites_completed:
+          type: boolean
+          default: false
+        questionnaire_completed:
+          type: boolean
+          default: false
+        docs_completed:
+          type: boolean
+          default: false
+        inspection_completed:
+          type: boolean
+          default: false
+      required:
+      - application_id
+    GetStepRequestRequest:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+      required:
+      - app_eid
+    HandleUTMResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    IncreaseStepRequestRequest:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+        from_step:
+          type: integer
+          description: Текущий этап заявки
+      required:
+      - app_eid
+      - from_step
+    LoanCalculatorRequestRequest:
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: Сумма кредита
+        term:
+          type: integer
+          description: Срок кредита в месяцах
+      required:
+      - amount
+      - term
+    LoanCalculatorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    LoanFiles:
+      type: object
+      properties:
+        page_one:
+          allOf:
+          - $ref: '#/components/schemas/FileInfo'
+          nullable: true
+        page_two:
+          allOf:
+          - $ref: '#/components/schemas/FileInfo'
+          nullable: true
+        stage:
+          type: integer
+          default: 0
+        sign_started:
+          type: boolean
+          default: true
+        docs_names_page_one:
+          type: array
+          items:
+            type: string
+          nullable: true
+        docs_names_page_two:
+          type: array
+          items:
+            type: string
+          nullable: true
+    NewAppResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        app_eid:
+          type: string
+          format: uuid
+        step:
+          type: integer
+        result:
+          type: boolean
+      required:
+      - app_eid
+      - message
+      - result
+      - step
+    NotFoundResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    PhoneRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+        check:
+          type: boolean
+          default: false
+      required:
+      - phone
+    PutQuestionnaireRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          nullable: true
+        questionnaire_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          nullable: true
+          minLength: 1
+        field_id:
+          type: string
+          nullable: true
+          minLength: 1
+        new_value:
+          type: string
+          nullable: true
+          minLength: 1
+        end_filling:
+          type: boolean
+          nullable: true
+      required:
+      - questionnaire_id
+    QRCodeResponse:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+        token_eid:
+          type: string
+          format: uuid
+          description: UUID токена для авторизации
+      required:
+      - app_eid
+      - token_eid
+    QRLoginError:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    QRLoginRequestRequest:
+      type: object
+      properties:
+        token_eid:
+          type: string
+          format: uuid
+          description: UUID токена, полученного при создании QR-кода
+    QRLoginSuccess:
+      type: object
+      properties:
+        detail:
+          type: string
+        app_eid:
+          type: string
+          format: uuid
+      required:
+      - detail
+    QuestionnaireData:
+      type: object
+      properties:
+        questionnaire_eid:
+          type: string
+          format: uuid
+          description: UUID анкеты
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionnaireGroup'
+        step:
+          type: integer
+      required:
+      - data
+      - questionnaire_eid
+      - step
+    QuestionnaireField:
+      type: object
+      properties:
+        id:
+          type: string
+        heading:
+          type: string
+        type:
+          type: string
+          nullable: true
+        field_type:
+          type: string
+          nullable: true
+        data:
+          type: string
+          nullable: true
+        placeholder:
+          type: string
+          nullable: true
+        tip_text:
+          type: string
+          nullable: true
+        required:
+          type: boolean
+        read_only:
+          type: boolean
+      required:
+      - heading
+      - id
+      - read_only
+      - required
+    QuestionnaireGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 100
+        title:
+          type: string
+          maxLength: 255
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionnaireField'
+      required:
+      - id
+      - rows
+      - title
+    RealEstateRequestRequest:
+      type: object
+      properties:
+        app_eid:
+          type: string
+          format: uuid
+          description: UUID черновика заявки
+        prop_eid:
+          type: string
+          format: uuid
+          description: EID существующего объекта недвижимости
+        address:
+          type: string
+          minLength: 1
+          description: Адрес объекта
+        cadastral_number:
+          type: string
+          minLength: 1
+          description: Кадастровый номер объекта
+      required:
+      - app_eid
+    ReviewStageEnum:
+      enum:
+      - Заполнение
+      - На рассмотрении
+      - Одобрено
+      - Закрыта
+      type: string
+      description: |-
+        * `Заполнение` - Filling
+        * `На рассмотрении` - Consideration
+        * `Одобрено` - Approved
+        * `Закрыта` - Not Relevant
+    SendCodeError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    SendCodeServerError:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+      - message
+    SendCodeSuccess:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+      - message
+    SendLoanCodeRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          description: UUID заявки на займ
+        page_number:
+          type: integer
+          default: 0
+      required:
+      - application_id
+    SendNotificationRequestRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          description: UUID заявки на займ
+        signal_type:
+          $ref: '#/components/schemas/SignalTypeEnum'
+        comment:
+          type: string
+          minLength: 1
+      required:
+      - application_id
+      - signal_type
+    SendQCodeRequestRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+          format: uuid
+        questionnaire_id:
+          type: string
+          format: uuid
+      required:
+      - application_id
+      - questionnaire_id
+    ServerError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    ServerErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    SignalTypeEnum:
+      enum:
+      - non_registration_10_minutes
+      - registration_started
+      - questionnaire_error
+      - inspection_completed
+      - application_completed
+      - loan_error
+      type: string
+      description: |-
+        * `non_registration_10_minutes` - Not Registration Ten Minutes
+        * `registration_started` - Registration Started
+        * `questionnaire_error` - Questionnaire Error
+        * `inspection_completed` - Inspection Completed
+        * `application_completed` - Application Completed
+        * `loan_error` - Loan Error
+    SopdResponse:
+      type: object
+      properties:
+        result:
+          type: boolean
+      required:
+      - result
+    StatusEnum:
+      enum:
+      - На оформлении
+      - Действует
+      - Исполнен
+      - Закрыт
+      type: string
+      description: |-
+        * `На оформлении` - On Registration
+        * `Действует` - Valid
+        * `Исполнен` - Executed
+        * `Закрыт` - Closed
+    StepIncreasedResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        step:
+          type: integer
+      required:
+      - detail
+      - step
+    StepResponse:
+      type: object
+      properties:
+        step:
+          type: integer
+      required:
+      - step
+    SuccessResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    Unauthorized:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    UnauthorizedError:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    UnauthorizedGos:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    UnauthorizedResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    UnsubscribeFromMailingResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    UpdateEmailRequestRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+      required:
+      - email
+    UpdateEntityRequestRequest:
+      type: object
+      properties:
+        application_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+        inn:
+          type: string
+          minLength: 1
+          description: ИНН юридического лица (10 цифр)
+          maxLength: 10
+        add_entity:
+          type: boolean
+          description: Флаг добавления/удаления юрлица
+      required:
+      - add_entity
+      - application_eid
+    UpdateLoanAmountRequestRequest:
+      type: object
+      properties:
+        application_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+        loan_amount:
+          type: number
+          format: double
+          description: Новая сумма кредита
+      required:
+      - application_eid
+      - loan_amount
+    UpdateLoanTermRequestRequest:
+      type: object
+      properties:
+        application_eid:
+          type: string
+          format: uuid
+          description: UUID заявки
+        loan_term:
+          type: integer
+          description: Новый срок кредита (в месяцах)
+      required:
+      - application_eid
+      - loan_term
+    UpdateNameRequestRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Новый псевдоним пользователя
+      required:
+      - name
+    UpdateRequestRequest:
+      type: object
+      properties:
+        contract_eid:
+          type: string
+          format: uuid
+          description: UUID договора для обновления
+      required:
+      - contract_eid
+    UserProfileResponse:
+      type: object
+      properties:
+        phone:
+          type: string
+        last_name:
+          type: string
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        birth_date:
+          type: string
+          nullable: true
+          description: Дата в формате DD-MM-YYYY
+        ur_address:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+        email_newsletter:
+          type: boolean
+        passport_number:
+          type: string
+          nullable: true
+        verify:
+          type: string
+      required:
+      - address
+      - birth_date
+      - email
+      - email_newsletter
+      - first_name
+      - last_name
+      - middle_name
+      - passport_number
+      - phone
+      - ur_address
+      - verify
+    UserPropertyRequestRequest:
+      type: object
+      properties:
+        where:
+          type: string
+          minLength: 1
+          description: Используйте 'app', чтобы исключить уже привязанное к активным
+            заявкам имущество.
+    UserPropertyResponse:
+      type: object
+      properties:
+        real_estate:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        vehicles:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        special_equipment:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - real_estate
+      - special_equipment
+      - vehicles
+    ValidationError:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    VehicleDataResponse:
+      type: object
+      properties:
+        vin:
+          type: string
+          description: Маскированный VIN-номер
+        model:
+          type: string
+          description: Марка и модель автомобиля
+        attempts_count:
+          type: integer
+          description: Номер текущей использованной попытки
+        success:
+          type: boolean
+          default: true
+      required:
+      - attempts_count
+      - model
+      - vin
+    VerifyCodeError:
+      type: object
+      properties:
+        error:
+          type: string
+        result:
+          type: boolean
+      required:
+      - error
+      - result
+    VerifyCodeSuccess:
+      type: object
+      properties:
+        success:
+          type: string
+        exist:
+          type: boolean
+        message:
+          type: string
+        user_eid:
+          type: string
+        result:
+          type: boolean
+      required:
+      - exist
+      - message
+      - result
+      - success
+      - user_eid
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

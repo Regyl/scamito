@@ -1,0 +1,10 @@
+- Reason: https://cbr.ru/inside/warning-list/detail/?id=46670
+- Host: https://flibbertak.ru/
+- Services
+  - Django
+    - Swagger
+      - [Swagger API file](resources/FTK%20Backend%20API.yaml)
+      - [Swagger API url](https://flibbertak.ru/api/docs/#/)
+    - Exposed methods
+      - [Exposed methos file](resources/Page%20not%20found%20at%20_api_main.html)
+      - [Exposed methos url](https://flibbertak.ru/api_main)
