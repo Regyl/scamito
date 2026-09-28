@@ -1,0 +1,5 @@
+nmap -sV --spoof-mac Apple -D RND:5 --open -p1-65535 <target>
+
+nmap -sV --spoof-mac Apple -D RND:5 --open -oX nmap.xml -p1-65535 <target>
+
+dirsearch -u <target> -e php,html,js,yaml,yml,properties,env

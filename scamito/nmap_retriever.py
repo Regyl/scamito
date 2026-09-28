@@ -12,7 +12,7 @@ def scan(hosts: str) -> dict:
     """
     scan_result = scanner.scan(
         hosts,
-        "1-10000",
-        arguments="-sV --spoof-mac Apple -D RND:5 --min-parallelism 8 -T4 --resolve-all --unique --open"
+        # "1-65535",
+        arguments="-sV --spoof-mac Apple -D RND:5 -p- --open"
     )
     return scan_result

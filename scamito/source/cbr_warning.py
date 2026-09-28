@@ -4,6 +4,7 @@ import json
 import logging
 import re
 from concurrent.futures import ThreadPoolExecutor
+from datetime import date, timedelta
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
@@ -51,9 +52,11 @@ def hosts_for_org(org_id) -> set:
 
 def iter_org_ids():
     page = 0
+    today = str(date.today() - timedelta(days=1))
+    log.info(today)
     while True:
         rows = get_json(
-            f"/Search?page={page}&dateFrom=2026-01-01&dateTo=2026-12-31"
+            f"/Search?page={page}&dateFrom={today}&dateTo=2026-12-31"
         ).get("Data") or []
         if not rows:
             break
@@ -71,5 +74,5 @@ def get_warning_hosts() -> set:
         for hosts in pool.map(hosts_for_org, iter_org_ids()):
             found |= hosts
     filtered = found - exclusions
-    log.info(f"Found {len(hosts)} hosts")
+    log.info(f"Found {len(filtered)} hosts")
     return filtered

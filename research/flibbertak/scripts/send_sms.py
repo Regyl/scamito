@@ -23,7 +23,10 @@ client = httpx.AsyncClient(
     )
 )
 
+counter = 0
+
 async def send_sms():
+    global counter
     phone = phone_number_supplier.get()
     try:
         log.info(f"{phone}")
@@ -33,7 +36,8 @@ async def send_sms():
             "body": {"phone": phone, "utm": {}},
         }
         response = await client.post(url=FRONT_API_URL, json=payload)
-        log.info(f"{phone}:{response.status_code}:{response.text}")
+        counter += 1
+        log.info(f"{counter}:{phone}:{response.status_code}:{response.text}")
         return response
     except Exception as e:
         log.warning(f"error:{phone}:{type(e).__name__}")
@@ -54,4 +58,7 @@ async def main(type: str):
 
 
 if __name__ == "__main__":
-    asyncio.run(main("sync"))
+    import os
+    res = os.listdir()
+    print(res)
+    # asyncio.run(main("sync"))

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/Users/novik/Applications/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.991 scan initiated Sun Sep 20 18:12:08 2026 as: C:\\Users\\novik\\Applications\\nmap\\nmap.exe -&#45;spoof-mac Apple -D RND:5 -&#45;open -oX nmap.xml -p1-65535 flibbertak.ru -->
+<nmaprun scanner="nmap" args="C:\\Users\\novik\\Applications\\nmap\\nmap.exe -&#45;spoof-mac Apple -D RND:5 -&#45;open -oX nmap.xml -p1-65535 flibbertak.ru" start="1789917128" startstr="Sun Sep 20 18:12:08 2026" version="7.991" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="5.140.165.250" addrtype="ipv4"/>
+<hostnames>
+<hostname name="flibbertak.ru" type="user"/>
+</hostnames>
+</hosthint>
+<taskprogress task="SYN Stealth Scan" time="1789917386" percent="89.48" remaining="29" etc="1789917415"/>
+<host starttime="1789917132" endtime="1789917446"><status state="up" reason="echo-reply" reason_ttl="53"/>
+<address addr="5.140.165.250" addrtype="ipv4"/>
+<hostnames>
+<hostname name="flibbertak.ru" type="user"/>
+<hostname name="mail.themezex.ru" type="PTR"/>
+</hostnames>
+<ports><extraports state="filtered" count="65530">
+<extrareasons reason="no-response" count="65529" proto="tcp" ports="1-24,26-79,81-442,444-2221,2223-7999,8001-41193,41195-65535"/>
+<extrareasons reason="host-unreach" count="1" proto="tcp" ports="25"/>
+</extraports>
+<port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="52"/><service name="http" method="table" conf="3"/></port>
+<port protocol="tcp" portid="443"><state state="open" reason="syn-ack" reason_ttl="51"/><service name="https" method="table" conf="3"/></port>
+<port protocol="tcp" portid="2222"><state state="open" reason="syn-ack" reason_ttl="53"/><service name="EtherNetIP-1" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8000"><state state="open" reason="syn-ack" reason_ttl="52"/><service name="http-alt" method="table" conf="3"/></port>
+<port protocol="tcp" portid="41194"><state state="open" reason="syn-ack" reason_ttl="53"/></port>
+</ports>
+<times srtt="121240" rttvar="5612" to="143688"/>
+</host>
+<runstats><finished time="1789917446" timestr="Sun Sep 20 18:17:26 2026" summary="Nmap done at Sun Sep 20 18:17:26 2026; 1 IP address (1 host up) scanned in 317.23 seconds" elapsed="317.23" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>
