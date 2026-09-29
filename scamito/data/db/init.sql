@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS e_ip_services (
     id SERIAL PRIMARY KEY,
     ip inet NOT NULL,
     port INTEGER NOT NULL,
-    product TEXT NOT NULL DEFAULT '',
-    version TEXT NOT NULL DEFAULT '',
+    product varchar(1024) DEFAULT '',
+    version varchar(1024) DEFAULT '',
     confidence INTEGER NOT NULL DEFAULT 0,
     UNIQUE (ip, port)
 );

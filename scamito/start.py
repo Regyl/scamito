@@ -19,7 +19,7 @@ def save_nmap():
     processed = postgres.list_processed_hostnames()
     hosts -= processed
     log.info(f"Excluding already processed hosts. Processed: {len(processed)}, remaining: {len(hosts)}")
-    chunked_hosts = chunk_util.chunk(hosts, 20)
+    chunked_hosts = chunk_util.chunk(hosts, 1)
     for hostnames in chunked_hosts:
         hosts_compacted = " ".join(hostnames)
         log.info(f"Starting nmap hosts {hosts_compacted}")

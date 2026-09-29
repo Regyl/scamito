@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{% if host %}{{ host.ip }} · {% endif %}Host · Scan inventory{% endblock %}
+{% block content %}
+{% if host %}
+  <p class="back"><a href="/hosts">All hosts</a></p>
+  <h1 class="mono">{{ host.ip }}</h1>
+  <section class="panel">
+    <h2>Hostnames</h2>
+    {% if host.hostnames %}
+      <ul class="stack">
+        {% for name in host.hostnames %}<li>{{ name }}</li>{% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No hostnames recorded.</p>
+    {% endif %}
+  </section>
+  <h2>Services</h2>
+  {% if not host.services %}
+    <p class="empty">No open services were recorded for this host.</p>
+  {% endif %}
+  {% for service in host.services %}
+    <article class="panel service">
+      <header class="service-head">
+        <h3>Port {{ service.port }}</h3>
+        <p>
+          {% if service.product %}{{ service.product }}{% else %}<span class="muted">Unknown product</span>{% endif %}
+          {% if service.version %}<span class="mono">{{ service.version }}</span>{% endif %}
+        </p>
+        <p class="meta">Confidence {{ service.confidence }} · {{ service.cves|length }} CVE{% if service.cves|length != 1 %}s{% endif %}</p>
+      </header>
+      {% if service.cves %}
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">CVE</th>
+                <th scope="col">Severity</th>
+                <th scope="col">Score</th>
+                <th scope="col">Published</th>
+                <th scope="col">Description</th>
+                <th scope="col">CPEs</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cve in service.cves %}
+                <tr>
+                  <td><a class="mono" href="https://nvd.nist.gov/vuln/detail/{{ cve.cve_id }}">{{ cve.cve_id }}</a></td>
+                  <td><span class="badge badge-{{ cve.severity|severity_key }}">{{ cve.severity|severity_label }}</span></td>
+                  <td class="mono">{{ cve.score|score }}</td>
+                  <td>{{ cve.published or "—" }}</td>
+                  <td class="desc">{{ cve.description or "—" }}</td>
+                  <td>
+                    {% if cve.matched_cpes %}
+                      <ul class="stack cpes">
+                        {% for cpe in cve.matched_cpes %}<li class="mono">{{ cpe }}</li>{% endfor %}
+                      </ul>
+                    {% else %}
+                      <span class="muted">—</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="muted">No CVEs recorded for this product and version.</p>
+      {% endif %}
+    </article>
+  {% endfor %}
+{% endif %}
+{% endblock %}

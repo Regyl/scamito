@@ -1,0 +1,18 @@
+{% if page_info and page_info.total %}
+<p class="meta">Showing {{ page_info.start }}–{{ page_info.end }} of {{ page_info.total }}</p>
+{% if page_info.pages > 1 %}
+<nav class="pager" aria-label="Pages">
+  {% if page_info.has_prev %}
+    <a href="{{ list_path }}?{{ qs(q=q, severity=severity|default(''), page=page_info.page - 1) }}">Previous</a>
+  {% else %}
+    <span>Previous</span>
+  {% endif %}
+  <span>Page {{ page_info.page }} of {{ page_info.pages }}</span>
+  {% if page_info.has_next %}
+    <a href="{{ list_path }}?{{ qs(q=q, severity=severity|default(''), page=page_info.page + 1) }}">Next</a>
+  {% else %}
+    <span>Next</span>
+  {% endif %}
+</nav>
+{% endif %}
+{% endif %}

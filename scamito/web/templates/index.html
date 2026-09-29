@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Overview · Scan inventory{% endblock %}
+{% block content %}
+{% if overview %}
+  <h1>Overview</h1>
+  <p class="lede">Hosts, services, and CVEs stored in Postgres.</p>
+  {% if overview.hosts == 0 and overview.services == 0 and overview.cves == 0 %}
+    <p class="empty">No scan data yet.</p>
+  {% endif %}
+  <section class="stats" aria-label="Counts">
+    <a class="stat" href="/hosts">
+      <b>{{ overview.hosts }}</b>
+      <span>Hosts</span>
+    </a>
+    <div class="stat">
+      <b>{{ overview.services }}</b>
+      <span>Services</span>
+    </div>
+    <a class="stat" href="/cves">
+      <b>{{ overview.cves }}</b>
+      <span>CVEs</span>
+    </a>
+  </section>
+  <section class="panel">
+    <h2>CVE severity</h2>
+    <ul class="sev-list">
+      {% for key in severity_keys %}
+        <li>
+          <a href="/cves?severity={{ key }}">
+            <span class="badge badge-{{ key }}">{{ key|capitalize }}</span>
+            <strong>{{ overview.severity[key] }}</strong>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+{% endblock %}

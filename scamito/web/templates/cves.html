@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}CVEs · Scan inventory{% endblock %}
+{% block content %}
+<h1>CVEs</h1>
+<p class="lede">Every recorded CVE, sorted by score. Host links open the machines running that product and version.</p>
+<form class="filters" method="get" action="/cves">
+  <label for="q">Search</label>
+  <input id="q" name="q" value="{{ q }}" placeholder="Product, version, or CVE id">
+  <label for="severity">Severity</label>
+  <select id="severity" name="severity">
+    <option value="" {% if not severity %}selected{% endif %}>Any</option>
+    {% for key in severity_keys %}
+      <option value="{{ key }}" {% if severity == key %}selected{% endif %}>{{ key|capitalize }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Filter</button>
+  {% if q or severity %}<a class="text-link" href="/cves">Clear</a>{% endif %}
+</form>
+{% if result %}
+  {% if result.total == 0 %}
+    <p class="empty">{% if q or severity %}No CVEs match that filter.{% else %}No CVEs yet.{% endif %}</p>
+  {% else %}
+    {% include "pagination.html" %}
+    <div class="table-scroll panel">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">CVE</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Score</th>
+            <th scope="col">Product</th>
+            <th scope="col">Version</th>
+            <th scope="col">Published</th>
+            <th scope="col">Description</th>
+            <th scope="col">CPEs</th>
+            <th scope="col">Hosts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in result.rows %}
+            <tr>
+              <td><a class="mono" href="https://nvd.nist.gov/vuln/detail/{{ row.cve_id }}">{{ row.cve_id }}</a></td>
+              <td><span class="badge badge-{{ row.severity|severity_key }}">{{ row.severity|severity_label }}</span></td>
+              <td class="mono">{{ row.score|score }}</td>
+              <td>{{ row.product or "—" }}</td>
+              <td class="mono">{{ row.version or "—" }}</td>
+              <td>{{ row.published or "—" }}</td>
+              <td class="desc">{{ row.description or "—" }}</td>
+              <td>
+                {% if row.matched_cpes %}
+                  <ul class="stack cpes">
+                    {% for cpe in row.matched_cpes %}<li class="mono">{{ cpe }}</li>{% endfor %}
+                  </ul>
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if row.hosts %}
+                  <ul class="stack">
+                    {% for ip in row.hosts %}
+                      <li><a class="mono" href="/hosts/{{ ip|ip_path }}">{{ ip }}</a></li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <span class="muted">No hosts</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if page_info.pages > 1 %}{% include "pagination.html" %}{% endif %}
+  {% endif %}
+{% endif %}
+{% endblock %}
